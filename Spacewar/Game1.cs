@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.XAudio2;
 using Spacewar.Classes;
 
 namespace Spacewar
@@ -48,12 +51,14 @@ namespace Spacewar
             _player.LoadContent(Content);
             _space.LoadContent(Content);
 
+
             for (int i = 0; i < 10; i++)
             {
-                Asteroid asteroid = new Asteroid(new Vector2(i * 40, 0));
-                asteroid.LoadContent(Content);
-                _asteroids.Add(asteroid);
+                LoadAsteroid();
+
+
             }
+          
 
 
 
@@ -70,15 +75,14 @@ namespace Spacewar
             _player.Update(_graphics.PreferredBackBufferWidth,
                 _graphics.PreferredBackBufferHeight);
             _space.Update();
+            UpdateAsteroid();
             //_asteroids.Update();
-            foreach (Asteroid asteroid in _asteroids)
-            {
-                asteroid.Update();
-            }
+          
+            
 
             base.Update(gameTime);
         }
-
+       
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -104,5 +108,55 @@ namespace Spacewar
 
             base.Draw(gameTime);
         }
+
+        private void UpdateAsteroid()
+        {
+            for (int i = 0; i < _asteroids.Count; i++)
+            {
+                Asteroid asteroid = _asteroids[i];
+
+                asteroid.Update();
+                //teleport
+                if (asteroid.Position.Y > _graphics.PreferredBackBufferHeight)
+                {
+
+                    Random random = new Random();
+                    int x = random.Next(0, _graphics.PreferredBackBufferWidth - asteroid.Width);
+                    int y = random.Next(0, _graphics.PreferredBackBufferHeight);
+                    asteroid.Position = new Vector2(x, -y);
+                }
+                //check coolisiton
+                if (asteroid.Coolistion.Intersects(_player.Coolision))
+                {
+                    _asteroids.Remove(asteroid);
+                    i--;
+                }
+               
+                
+                
+
+                
+            }
+
+
+            if (_asteroids.Count < 10)
+            {
+                LoadAsteroid();
+            }
+
+        }
+        private void LoadAsteroid()
+        {
+            Asteroid asteroid = new Asteroid();
+            asteroid.LoadContent(Content);
+
+            Random random = new Random();
+            int x = random.Next(0, _graphics.PreferredBackBufferWidth - asteroid.Width);
+            int y = random.Next(0, _graphics.PreferredBackBufferHeight);
+            asteroid.Position = new Vector2(x, -y);
+
+            _asteroids.Add(asteroid);
+        }
+
     }
 }

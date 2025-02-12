@@ -11,6 +11,23 @@ namespace Spacewar
     {
         private Vector2 _position;
         private Texture2D _texture;
+        private Rectangle _coolisiton;
+
+
+
+         public int Width
+        {
+            get { return _texture.Width; }
+        }
+        public Vector2 Position
+        {
+            set { _position = value; }
+           get { return _position; }
+        }
+        public Rectangle Coolistion
+        {
+            get { return _coolisiton; }
+        }
          public Asteroid() : this(Vector2.Zero)
         {
             
@@ -22,6 +39,7 @@ namespace Spacewar
         {
             _texture = null;
             _position = position;
+            _coolisiton = new Rectangle((int)_position.X, (int)_position.Y, 0 , 0);
         }
         
             
@@ -33,6 +51,7 @@ namespace Spacewar
         public void Update()
         {
             _position.Y += 10;
+            _coolisiton = new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
         }
         public void Draw(SpriteBatch spriteBatch)
         {

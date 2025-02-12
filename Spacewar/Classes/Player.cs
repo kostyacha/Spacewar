@@ -13,12 +13,18 @@ namespace Spacewar.Classes
         private Texture2D _texture;
         private float _speed;
         private float _2speed;
+        private Rectangle _coolision;
+        public Rectangle Coolision
+        {
+            get { return _coolision; }
+        }
          public Player()
         {
             _position = new Vector2(30,30);
             _texture = null;
             _speed = 7;
             _2speed = 20;
+            _coolision = new Rectangle((int)_position.X,(int)_position.Y, 0, 0);
         }
         public void LoadContent(ContentManager Content)
         {
@@ -74,6 +80,8 @@ namespace Spacewar.Classes
                 _position.Y= heightScreen - _texture.Height;
             }
             #endregion
+
+            _coolision = new Rectangle((int)_position.X, (int)_position.Y, _texture.Width, _texture.Height);
         }
 
         public void Draw(SpriteBatch  spriteBatch)
